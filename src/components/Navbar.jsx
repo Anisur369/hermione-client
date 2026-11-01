@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function Navbar() {
-  const [user, setUser] = useState<{ email: string; name: string; photoURL: string } | null>(null); // Mock auth state
+  const [user, setUser] = useState(null); // Mock auth state
 
   return (
     <nav className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
