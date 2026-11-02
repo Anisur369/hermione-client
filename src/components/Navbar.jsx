@@ -13,7 +13,7 @@ export default function Navbar() {
       
       <div className="flex items-center gap-6">
         <Link href="/" className="hover:text-green-500">Home</Link>
-        <Link href="/upcoming-events" className="hover:text-green-500">Upcoming Events</Link>
+        <Link href="/events" className="hover:text-green-500">Upcoming Events</Link>
         
         {user ? (
           <div className="relative group flex items-center gap-2">

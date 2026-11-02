@@ -39,7 +39,7 @@ export default function CreateEvent() {
 
     if (res.ok) {
       alert('Event created successfully!');
-      router.push('/upcoming-events');
+      router.push('/events');
     } else {
       alert('Failed to create event.');
     }

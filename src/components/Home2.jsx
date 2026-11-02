@@ -19,7 +19,7 @@ export default function Home() {
       <section className="bg-green-700 text-white py-20 text-center px-4">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Empower Communities Through Service</h1>
         <p className="text-lg max-w-2xl mx-auto mb-6">Join hands to create a sustainable impact. Participate in local charity, cleanup, and tree plantation events.</p>
-        <Link href="/upcoming-events" className="bg-white text-green-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100">
+        <Link href="/events" className="bg-white text-green-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100">
           Explore Events
         </Link>
       </section>
