@@ -17,7 +17,7 @@ export default function CreateEvent() {
     e.preventDefault();
     const today = new Date().toISOString().split('T')[0];
     
-    // Validation: Date must be in the future
+    // Validation: Date must be in the future[cite: 4]
     if (formData.date <= today) {
       alert('Event date must be in the future!');
       return;
@@ -25,7 +25,7 @@ export default function CreateEvent() {
 
     const eventPayload = {
       ...formData,
-      createdBy: 'user@example.com', // Replace with logged-in user's email from Auth context
+      createdBy: 'user@example.com', // Replace with logged-in user's email
     };
 
     const res = await fetch('http://localhost:5000/events', {
