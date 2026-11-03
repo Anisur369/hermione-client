@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { signOut, useSession } from "@/lib/auth-client";
+
 
 const data = { 
     name:"John Doe",
@@ -9,7 +11,8 @@ const data = {
  };
 
 export default function Navbar() {
-  const [user, setUser] = useState(data);
+  const { data: user, isPending } = useSession();
+  console.log("User session data:", user);
 
   return (
     <nav className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">

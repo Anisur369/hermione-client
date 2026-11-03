@@ -5,14 +5,14 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { Resend } from 'resend';
 
 const client = new MongoClient(process.env.BETTER_AUTH_DB_URL);
-const db = client.db("AnisAuth");
+const db = client.db("hermioneDB");
 
 const resend = new Resend(process.env.BETTER_AUTH_RESEND_API_KEY);
 
 export const auth = betterAuth({
   emailAndPassword: { 
     enabled: true, 
-    requireEmailVerification: true,
+    // requireEmailVerification: true,
     sendResetPassword: ({ user, url }) => {
       void resend.emails.send({
         from: 'Acme <onboarding@resend.dev>',

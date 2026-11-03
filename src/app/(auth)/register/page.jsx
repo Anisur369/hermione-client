@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authClient } from '@/lib/auth-client'; // আপনার প্রজেক্টের পাথ অনুযায়ী ঠিক করে নিন
+import { signUp } from '@/lib/auth-client';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,16 +32,16 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const { data, error } = await authClient.signUp.email({
+      const { data, error } = await signUp.email({
         email,
         password,
         name,
         image: image || undefined,
-        callbackURL: '/upcoming-events',
+        callbackURL: '/',
       }, {
         onSuccess: () => {
           alert('Account created successfully!');
-          router.push('/upcoming-events');
+          router.push('/events');
         },
         onError: (ctx) => {
           setErrorMsg(ctx.error.message || 'Registration failed.');

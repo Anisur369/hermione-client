@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authClient } from '@/lib/auth-client'; // আপনার BetterAuth ক্লায়েন্ট পাথ অনুযায়ী ঠিক করে নিন
+import { signIn } from "@/lib/auth-client";
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,14 +21,14 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const { data, error } = await signIn.email({
         email,
         password,
-        callbackURL: '/upcoming-events',
+        callbackURL: '/',
       }, {
         onSuccess: () => {
           alert('Successfully logged in!');
-          router.push('/upcoming-events');
+          router.push('/');
         },
         onError: (ctx) => {
           setErrorMsg(ctx.error.message || 'Invalid email or password.');
@@ -48,9 +49,9 @@ export default function LoginPage() {
   // Handle Social Login (Google)
   const handleGoogleLogin = async () => {
     try {
-      await authClient.signIn.social({
+      await signIn.social({
         provider: 'google',
-        callbackURL: '/upcoming-events',
+        callbackURL: '/',
       });
     } catch (err) {
       console.error(err);
