@@ -3,20 +3,27 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import logo from '../../public/logo.png';
 
 export default function Navbar() {
   const { data, isPending } = useSession();
   const router = useRouter();
   const user = data?.user;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // প্রোফাইল ড্রপডাউন স্টেট
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // মোবাইল মেনু স্টেট
   const dropdownRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
-  // বাইরে কোথাও ক্লিক করলে ড্রপডাউন বন্ধ হয়ে যাবে
+  // বাইরে কোথাও ক্লিক করলে ড্রপডাউন বা মোবাইল মেনু বন্ধ হয়ে যাবে
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && !event.target.closest('button[aria-label="Toggle Menu"]')) {
+        setMobileMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -35,92 +42,210 @@ export default function Navbar() {
     });
   };
 
-  // ইউজারের নামের প্রথম অক্ষর বের করার ফাংশন (যেমন: "Tanvir" হলে "T")
   const getInitial = (name) => {
     if (!name) return "U";
     return name.charAt(0).toUpperCase();
   };
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
-      <Link href="/" className="text-xl font-bold text-green-600">
-        CommunityCare
-      </Link>
-      
-      <div className="flex items-center gap-6">
-        <Link href="/" className="hover:text-green-500">Home</Link>
-        <Link href="/events" className="hover:text-green-500">Upcoming Events</Link>
+    <nav className="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
         
-        {isPending ? (
-          <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
-        ) : user ? (
-          <div className="relative" ref={dropdownRef}>
-            <div 
-              onClick={() => setIsOpen((prev) => !prev)} 
-              className="flex items-center gap-2 cursor-pointer select-none"
-            >
-              <div className="relative">
-                {user.image ? (
-                  <img 
-                    src={user.image} 
-                    alt="Profile" 
-                    className="w-10 h-10 rounded-full border object-cover pointer-events-none"
-                  />
-                ) : (
-                  /* user.image না থাকলে নামের প্রথম বর্ণ দেখাবে */
-                  <div className="w-10 h-10 rounded-full border border-green-500 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-bold flex items-center justify-center text-lg pointer-events-none">
-                    {getInitial(user.name)}
+        {/* লোগো */}
+        <Link href="/" className="text-xl font-bold text-green-600 flex items-center">
+          <Image src={logo} alt="Logo" className="h-8 w-auto inline-block mr-2" />
+          <span className="hidden sm:inline">CommunityCare</span>
+        </Link>
+        
+        {/* ডেস্কটপ নেভিগেশন লিংকস */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link href="/" className="hover:text-green-500 transition">Home</Link>
+          <Link href="/events" className="hover:text-green-500 transition">Upcoming Events</Link>
+        </div>
+
+        {/* ডানপাশের অংশ (ইউজার پروفাইল / লগইন / হ্যামবার্গার বাটন) */}
+        <div className="flex items-center gap-4">
+          
+          {/* ডেস্কটপের জন্য ইউজার সেকশন */}
+          <div className="hidden md:flex items-center gap-4">
+            {isPending ? (
+              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+            ) : user ? (
+              <div className="relative flex items-center gap-4" ref={dropdownRef}>
+                <div 
+                  onClick={() => setIsOpen((prev) => !prev)} 
+                  className="flex items-center gap-2 cursor-pointer select-none"
+                >
+                  <div className="relative">
+                    {user.image ? (
+                      <img 
+                        src={user.image} 
+                        alt="Profile" 
+                        className="w-10 h-10 rounded-full border object-cover pointer-events-none"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full border border-green-500 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-bold flex items-center justify-center text-lg pointer-events-none">
+                        {getInitial(user.name)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* ড্রপডাউন মেনু */}
+                {isOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 shadow-xl rounded-md border dark:border-gray-700 p-3 flex flex-col z-50">
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
+                      {user.name}
+                    </span>
+                    <span className="text-xs text-gray-500 pb-2 border-b dark:text-gray-400 mb-2 truncate">{user.email}</span>
+                    <Link 
+                      href="/events/create" 
+                      onClick={() => setIsOpen(false)} 
+                      className="text-sm py-1.5 hover:text-green-500 transition"
+                    >
+                      Create Event
+                    </Link>
+                    <Link 
+                      href="/events/manage" 
+                      onClick={() => setIsOpen(false)} 
+                      className="text-sm py-1.5 hover:text-green-500 transition"
+                    >
+                      Manage Events
+                    </Link>
+                    <Link 
+                      href="/joined-events" 
+                      onClick={() => setIsOpen(false)} 
+                      className="text-sm py-1.5 hover:text-green-500 transition"
+                    >
+                      Joined Events
+                    </Link>
+                    <button 
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleSignOut();
+                      }} 
+                      className="mt-2 border-t text-left text-sm text-red-500 font-medium py-1 hover:bg-red-50 dark:hover:bg-red-950/30 px-1 transition"
+                    >
+                      Logout
+                    </button>
                   </div>
                 )}
-                {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span> */}
-              </div>
-            </div>
-            
-            {/* ড্রপডাউন মেনু */}
-            {isOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 shadow-xl rounded-md border dark:border-gray-700 p-3 flex flex-col z-50">
-                <span className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-200 truncate border-b pb-1 dark:border-gray-700">
-                  {user.name}
-                </span>
-                <Link 
-                  href="/create-event" 
-                  onClick={() => setIsOpen(false)} 
-                  className="text-sm py-1.5 hover:text-green-500 transition"
-                >
-                  Create Event
-                </Link>
-                <Link 
-                  href="/manage-events" 
-                  onClick={() => setIsOpen(false)} 
-                  className="text-sm py-1.5 hover:text-green-500 transition"
-                >
-                  Manage Events
-                </Link>
-                <Link 
-                  href="/joined-events" 
-                  onClick={() => setIsOpen(false)} 
-                  className="text-sm py-1.5 hover:text-green-500 transition"
-                >
-                  Joined Events
-                </Link>
+
                 <button 
                   onClick={() => {
                     setIsOpen(false);
                     handleSignOut();
                   }} 
-                  className="mt-2 text-left text-sm text-red-500 font-medium py-1 hover:bg-red-50 dark:hover:bg-red-950/30 rounded px-1 transition"
+                  className="text-sm text-red-500 font-semibold px-3 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 transition rounded-md cursor-pointer"
                 >
                   Logout
                 </button>
               </div>
+            ) : (
+              <Link href="/login" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+                Login
+              </Link>
             )}
           </div>
-        ) : (
-          <Link href="/login" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
-            Login
-          </Link>
-        )}
+
+          {/* মোবাইল ডিভাইসের জন্য হ্যামবার্গার মেনু বাটন */}
+          <button 
+            aria-label="Toggle Menu"
+            onClick={() => setMobileMenuOpen((prev) => !prev)} 
+            className="md:hidden text-gray-700 dark:text-gray-200 focus:outline-none p-2"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* মোবাইল ড্রপডাউন মেনু */}
+      {mobileMenuOpen && (
+        <div ref={mobileMenuRef} className="md:hidden bg-white dark:bg-gray-800 border-t dark:border-gray-700 px-4 py-4 space-y-3 shadow-lg">
+          <Link 
+            href="/" 
+            onClick={() => setMobileMenuOpen(false)} 
+            className="block text-gray-700 dark:text-gray-200 hover:text-green-500 transition py-1"
+          >
+            Home
+          </Link>
+          <Link 
+            href="/events" 
+            onClick={() => setMobileMenuOpen(false)} 
+            className="block text-gray-700 dark:text-gray-200 hover:text-green-500 transition py-1"
+          >
+            Upcoming Events
+          </Link>
+
+          {isPending ? (
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse my-2" />
+          ) : user ? (
+            <div className="pt-3 border-t dark:border-gray-700 space-y-2">
+              <div className="flex items-center gap-3 pb-2">
+                {user.image ? (
+                  <img src={user.image} alt="Profile" className="w-9 h-9 rounded-full border object-cover" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full border border-green-500 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 font-bold flex items-center justify-center text-sm">
+                    {getInitial(user.name)}
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{user.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px]">{user.email}</p>
+                </div>
+              </div>
+
+              <Link 
+                href="/events/create" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="block text-sm text-gray-700 dark:text-gray-300 hover:text-green-500 py-1"
+              >
+                Create Event
+              </Link>
+              <Link 
+                href="/events/manage" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="block text-sm text-gray-700 dark:text-gray-300 hover:text-green-500 py-1"
+              >
+                Manage Events
+              </Link>
+              <Link 
+                href="/joined-events" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="block text-sm text-gray-700 dark:text-gray-300 hover:text-green-500 py-1"
+              >
+                Joined Events
+              </Link>
+
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleSignOut();
+                }} 
+                className="w-full text-left text-sm text-red-500 font-semibold py-2 mt-2 border-t dark:border-gray-700"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="pt-2">
+              <Link 
+                href="/login" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="block text-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+              >
+                Login
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

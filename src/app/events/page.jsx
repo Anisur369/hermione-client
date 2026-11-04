@@ -72,7 +72,7 @@ export default function UpcomingEventsPage() {
           </div>
           
           <Link
-            href="/create-event"
+            href="/events/create"
             className="bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold px-5 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 text-sm"
           >
             <span>+ Create Event</span>

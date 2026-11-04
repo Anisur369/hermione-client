@@ -16,9 +16,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
       {/* Banner Section */}
-      <section className="bg-green-700 text-white py-20 text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Empower Communities Through Service</h1>
-        <p className="text-lg max-w-2xl mx-auto mb-6">Join hands to create a sustainable impact. Participate in local charity, cleanup, and tree plantation events.</p>
+      <section className="bg-green-700 text-white py-40 text-center px-4">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8">Empower Communities Through Service</h1>
+        <p className="text-lg max-w-2xl mx-auto mb-10">Join hands to create a sustainable impact. Participate in local charity, cleanup, and tree plantation events.</p>
         <Link href="/events" className="bg-white text-green-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100">
           Explore Events
         </Link>
