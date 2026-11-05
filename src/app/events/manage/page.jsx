@@ -12,7 +12,7 @@ export default function ManageEventsPage() {
   // Fetch events created by the logged-in user
   const fetchMyEvents = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/my-events/${userEmail}`);
+      const res = await fetch(`${process.env.HERMIONE_SERVER_URL}/my-events/${userEmail}`);
       const data = await res.json();
       if (res.ok) {
         setEvents(data);
@@ -32,7 +32,7 @@ export default function ManageEventsPage() {
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this event?')) {
       try {
-        const res = await fetch(`http://localhost:5000/events/${id}`, {
+        const res = await fetch(`https://hermione-server.vercel.app/events/${id}`, {
           method: 'DELETE',
         });
         if (res.ok) {

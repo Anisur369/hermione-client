@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch top 6 upcoming events using limit
-    fetch('http://localhost:5000/events?limit=6')
+    fetch(`https://hermione-server.vercel.app/events?limit=6`)
       .then(res => res.json())
       .then(data => setRecentEvents(data))
       .catch(err => console.log(err));

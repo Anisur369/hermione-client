@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signOut, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 
 export default function CreateEvent() {
   const { data, isPending } = useSession();
@@ -33,7 +33,7 @@ export default function CreateEvent() {
       createdBy: user?.email, // Replace with logged-in user's email
     };
 
-    const res = await fetch('http://localhost:5000/events', {
+    const res = await fetch(`https://hermione-server.vercel.app/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

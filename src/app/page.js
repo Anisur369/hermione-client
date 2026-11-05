@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch 6 recent upcoming events using limit
-    fetch('http://localhost:5000/events?limit=6')
+    fetch(`https://hermione-server.vercel.app/events?limit=6`)
       .then(res => res.json())
       .then(data => setRecentEvents(data))
       .catch(err => console.log(err));
@@ -72,8 +72,8 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433" alt="Gallery" className="rounded-lg h-48 w-full object-cover" />
             <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a" alt="Gallery" className="rounded-lg h-48 w-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Gallery" className="rounded-lg h-48 w-full object-cover" />
             <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c" alt="Gallery" className="rounded-lg h-48 w-full object-cover" />
-            <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb9" alt="Gallery" className="rounded-lg h-48 w-full object-cover" />
           </div>
         </div>
       </section>

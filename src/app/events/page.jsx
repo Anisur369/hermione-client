@@ -11,7 +11,7 @@ export default function UpcomingEventsPage() {
 
   // Fetch events from backend API
   useEffect(() => {
-    fetch('http://localhost:5000/events')
+    fetch(`https://hermione-server.vercel.app/events`)
       .then((res) => res.json())
       .then((data) => {
         setEvents(data);
