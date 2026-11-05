@@ -103,7 +103,7 @@ export default function Home() {
       {/* Feature Section */}
       <section className="py-20 max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2">Why Choose CommunityCare</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2">Why Choose Feature </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
             Everything you need to organize, connect, and drive impactful social initiatives seamlessly.
           </p>
@@ -200,7 +200,7 @@ export default function Home() {
 
       {/* Newsletter Section */}
       <section className="py-20 max-w-3xl mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold mb-3">Stay Updated</h2>
+        <h2 className="text-3xl font-bold mb-3">Stay Updated Newsletter </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-8 text-sm">
           Subscribe to our newsletter to receive real-time updates on upcoming social service events and community drives.
         </p>
