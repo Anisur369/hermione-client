@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from "@/lib/auth-client";
+import Image from 'next/image';
+import logo from '../../../../public/logo.png';
 
 
 export default function LoginPage() {
@@ -65,14 +67,14 @@ export default function LoginPage() {
         
         {/* Top Logo / Icon */}
         <div className="flex flex-col items-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-xl font-bold mb-3 shadow-inner">
-            🤝
+          <div className="w-12 h-12 text-emerald-400 flex items-center justify-center text-xl font-bold mb-3 shadow-inner">
+            <Image src={logo} alt="Logo" className="h-8 w-auto inline-block mr-2" />
           </div>
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-            Welcome Back
+            Welcome
           </h1>
           <p className="text-xs text-gray-400 mt-1 text-center">
-            Sign in to organize and join community drives
+            Sign in to organize and join CommunityCare
           </p>
         </div>
 
