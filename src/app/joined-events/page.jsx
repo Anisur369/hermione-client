@@ -74,7 +74,7 @@ export default function JoinedEventsPage() {
               return (
                 <div
                   key={event._id}
-                  className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between transition hover:border-gray-700"
+                  className="bg-gray-900/90 border border-gray-800/90 rounded-2xl overflow-hidden shadow-2xl flex flex-col justify-between transition-all duration-300 hover:border-emerald-500/40 hover:shadow-emerald-950/20"
                 >
                   <div>
                     {/* Thumbnail & Badges */}
@@ -82,27 +82,33 @@ export default function JoinedEventsPage() {
                       <img
                         src={event.thumbnail}
                         alt={event.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />
-                      <span className="absolute top-3 left-3 bg-gray-950/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1 rounded-full font-medium">
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950/60 via-transparent to-transparent"></div>
+                      <span className="absolute top-3 left-3 bg-gray-950/80 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1 rounded-full font-medium shadow">
                         {event.eventType}
                       </span>
-                      <span className="absolute bottom-3 left-3 bg-gray-950/80 backdrop-blur-md text-gray-200 text-xs px-2.5 py-1 rounded-lg border border-gray-800">
+                      <span className="absolute bottom-3 left-3 bg-gray-950/80 backdrop-blur-md text-gray-200 text-xs px-2.5 py-1 rounded-lg border border-gray-800 flex items-center gap-1.5">
                         📅 {formattedDate}
                       </span>
                     </div>
 
                     {/* Content Details */}
-                    <div className="p-5">
-                      <h3 className="text-lg font-bold text-white tracking-wide mb-2 line-clamp-1">
+                    <div className="p-5 space-y-3">
+                      <h3 className="text-lg font-bold text-white tracking-wide line-clamp-1">
                         {event.title}
                       </h3>
-                      <p className="text-xs text-gray-400 flex items-center gap-1 mb-3">
+                      <p className="text-xs text-gray-400 flex items-center gap-1.5">
                         📍 {event.location}
                       </p>
-                      <p className="text-xs text-emerald-400/90 font-medium bg-emerald-950/40 border border-emerald-800/40 p-2.5 rounded-xl mb-4">
-                        You have signed up as a confirmed volunteer for this initiative.
-                      </p>
+
+                      {/* Organizer & Status Badge */}
+                      <div className="pt-2 border-t border-gray-800/80 flex items-center justify-between text-xs text-gray-400">
+                        <span>Host: <strong className="text-gray-300">{event.createdBy}</strong></span>
+                        <span className="text-emerald-400 bg-emerald-950/60 border border-emerald-800/50 px-2.5 py-1 rounded-md font-medium">
+                          ✓ Confirmed
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -110,7 +116,7 @@ export default function JoinedEventsPage() {
                   <div className="p-5 pt-0">
                     <Link
                       href={`/events/${event._id}`}
-                      className="block text-center bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-semibold py-2.5 rounded-xl transition duration-200 text-sm shadow-md"
+                      className="block text-center bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold py-2.5 rounded-xl transition duration-200 text-sm shadow-md"
                     >
                       View Event →
                     </Link>
