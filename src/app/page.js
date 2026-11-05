@@ -1,9 +1,42 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   const [recentEvents, setRecentEvents] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      image: '/sliderImage1.jpg',
+      title: 'Empower Communities Through Service',
+      description: 'Join hands to create a sustainable impact. Participate in local charity, cleanup, and tree plantation events.',
+    },
+    {
+      image: '/sliderImage2.jpg',
+      title: 'Drive Positive Social Change',
+      description: 'Connect with active volunteers and make a real difference in your neighborhood.',
+    },
+    {
+      image: '/sliderImage3.jpg',
+      title: 'Support Winter & Relief Drives',
+      description: 'Help distribute food, clothes, and essentials to underprivileged communities in need.',
+    },
+    {
+      image: '/sliderImage4.jpg',
+      title: 'Protect Our Green Planet',
+      description: 'Take part in tree plantation drives and urban environmental cleanup campaigns.',
+    },
+  ];
+
+  // অটো-স্লাইডার ইফেক্ট (প্রতি ৩ সেকেন্ড পর পর স্লাইড চেঞ্জ হবে)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
 
   useEffect(() => {
     // Fetch 6 recent upcoming events using limit
@@ -16,21 +49,60 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
       
-      {/* Banner Section */}
-      <section className="bg-green-700 text-white py-40 text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8">Empower Communities Through Service</h1>
-        <p className="text-lg max-w-2xl mx-auto mb-10">Join hands to create a sustainable impact. Participate in local charity, cleanup, and tree plantation events.</p>
-        <Link href="/events" className="bg-white text-green-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition">
-          Explore Events
-        </Link>
+      {/* Dynamic Banner / Carousel Section with Fixed Height */}
+      <section className="relative bg-gray-900 text-white h-[550px] md:h-[650px] w-full flex items-center justify-center overflow-hidden text-center px-4">
+        
+        {/* Background Slider Images Container */}
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-40 scale-100' : 'opacity-0 scale-105'
+            }`}
+          >
+            <div className="relative w-full h-full">
+              <Image
+                src={slide.image}
+                alt={`Slider ${index + 1}`}
+                fill
+                priority={index === 0}
+                className="object-cover object-center transition-transform duration-1000"
+              />
+            </div>
+          </div>
+        ))}
+
+        {/* Content Layer */}
+        <div className="relative z-10 max-w-4xl mx-auto transition-all duration-700">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight drop-shadow-md">
+            {slides[currentSlide].title}
+          </h1>
+          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-gray-200 leading-relaxed drop-shadow">
+            {slides[currentSlide].description}
+          </p>
+          <Link href="/events" className="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold px-8 py-3.5 rounded-xl shadow-lg transition duration-200 text-sm inline-block">
+            Explore Events →
+          </Link>
+        </div>
+
+        {/* Slider Indicator Dots */}
+        <div className="absolute bottom-6 z-20 flex gap-2 justify-center w-full">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === currentSlide ? 'w-8 bg-emerald-400' : 'w-2.5 bg-white/50 hover:bg-white/80'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Feature Section */}
       <section className="py-20 max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
-          {/* <span className="text-xs uppercase tracking-widest text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-950/60 px-3 py-1 rounded-full border border-green-200 dark:border-green-800/50">
-            Platform Capabilities
-          </span> */}
           <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2">Why Choose CommunityCare</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
             Everything you need to organize, connect, and drive impactful social initiatives seamlessly.
@@ -65,34 +137,36 @@ export default function Home() {
       </section>
 
       {/* Recent Upcoming Events Section */}
-      <section className="py-20 bg-gray-800">
-        <div className="py-16 max-w-6xl mx-auto px-4">
+      <section className="py-20 bg-gray-800 text-gray-100">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-xs uppercase tracking-widest text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-950/60 px-3 py-1 rounded-full border border-green-200 dark:border-green-800/50">
+            {/* <span className="text-xs uppercase tracking-widest text-emerald-400 font-semibold bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">
               Active Drives
-            </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2">Recent Upcoming Events</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
+            </span> */}
+            <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2 text-white">Recent Upcoming Events</h2>
+            <p className="text-sm text-gray-400 max-w-lg mx-auto">
               Discover verified volunteer initiatives scheduled for upcoming dates and register to participate.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {recentEvents.map(event => (
-              <div key={event._id} className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 flex flex-col justify-between transition hover:border-green-500/50">
+              <div key={event._id} className="bg-gray-950/80 rounded-2xl overflow-hidden shadow-xl border border-gray-800 flex flex-col justify-between transition hover:border-gray-700">
                 <div>
-                  <img src={event.thumbnail} alt={event.title} className="w-full h-48 object-cover" />
+                  <div className="relative h-48 w-full">
+                    <img src={event.thumbnail} alt={event.title} className="w-full h-full object-cover" />
+                  </div>
                   <div className="p-5">
-                    <span className="text-xs bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 px-3 py-1 rounded-full font-semibold">
+                    <span className="text-xs bg-gray-900 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full font-semibold">
                       {event.eventType}
                     </span>
-                    <h3 className="text-lg font-bold mt-3 mb-1 line-clamp-1">{event.title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">📍 {event.location}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">📅 {new Date(event.date).toLocaleDateString()}</p>
+                    <h3 className="text-lg font-bold text-white mt-3 mb-1 line-clamp-1">{event.title}</h3>
+                    <p className="text-xs text-gray-400 flex items-center gap-1 mb-1">📍 {event.location}</p>
+                    <p className="text-xs text-gray-400 flex items-center gap-1">📅 {new Date(event.date).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <div className="p-5 pt-0">
-                  <Link href={`/events/${event._id}`} className="block text-center bg-green-600 text-white font-semibold py-2.5 rounded-xl hover:bg-green-700 transition text-sm shadow">
+                  <Link href={`/events/${event._id}`} className="block text-center bg-emerald-500 text-gray-950 font-bold py-2.5 rounded-xl hover:bg-emerald-400 transition text-sm shadow">
                     View Event →
                   </Link>
                 </div>
@@ -106,9 +180,9 @@ export default function Home() {
       <section className="py-20 bg-gray-100 dark:bg-gray-800/50">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="mb-12">
-            <span className="text-xs uppercase tracking-widest text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-950/60 px-3 py-1 rounded-full border border-green-200 dark:border-green-800/50">
+            {/* <span className="text-xs uppercase tracking-widest text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-950/60 px-3 py-1 rounded-full border border-green-200 dark:border-green-800/50">
               Visual Impact
-            </span>
+            </span> */}
             <h2 className="text-3xl md:text-4xl font-extrabold mt-3 mb-2">Community Moments Gallery</h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
               Glimpses of dedication, teamwork, and positive change from our past community service events.
