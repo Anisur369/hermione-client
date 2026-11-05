@@ -106,7 +106,7 @@ export default function Navbar() {
                       Create Event
                     </Link>
                     <Link 
-                      href="/events/manage" 
+                      href={`/events/manage`} 
                       onClick={() => setIsOpen(false)} 
                       className="text-sm py-1.5 hover:text-green-500 transition"
                     >

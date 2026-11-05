@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { useSession } from "@/lib/auth-client";
+
 
 export default function EventDetailsContent() {
   const params = useParams();
   const id = params?.id;
+  const { data } = useSession();
+  const userEmail = data?.user?.email;
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,14 +34,16 @@ export default function EventDetailsContent() {
       });
   }, [id]);
 
+  console.log(id, userEmail);
+
   // Handle Join Event functionality
   const handleJoinEvent = async () => {
-    // এখানে আপনার লগইন করা ইউজারের ইমেইল ডায়নামিকালি দিতে হবে (যেমন Auth Context বা LocalStorage থেকে)
-    const userEmail = 'anisur@dev.com'; 
+    // এখানে আপনার লগইন করা ইউজারের ইমেইল ডায়নামিকালি দিতে হবে (যেমন Auth Context বা LocalStorage থেকে)
+    // const userEmail = 'anisur@dev.com'; 
 
     setJoining(true);
     try {
-      const res = await fetch(`${process.env.HERMIONE_SERVER_URL}/join-event`, {
+      const res = await fetch(`https://hermione-server.vercel.app/join-event`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +142,7 @@ export default function EventDetailsContent() {
               <button
                 onClick={handleJoinEvent}
                 disabled={joining}
-                className="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg duration-200 disabled:opacity-50 text-sm whitespace-nowrap"
+                className="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold px-6 py-3 rounded-xl transition shadow-lg duration-200 disabled:opacity-50 text-sm whitespace-nowrap cursor-pointer"
               >
                 {joining ? 'Joining...' : 'Join Event 🤝'}
               </button>

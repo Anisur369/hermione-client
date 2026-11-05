@@ -1,32 +1,39 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from "@/lib/auth-client";
 
 export default function ManageEventsPage() {
+  const { data, isPending } = useSession();
+  const user = data?.user;
+  
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ইউজারের ইমেইল (আপনার প্রজেক্টের লগইন করা ইউজারের ইমেইল এখানে ডায়নামিকালি বসাবেন)
-  const userEmail = 'anisur@dev.com';
-
-  // Fetch events created by the logged-in user
-  const fetchMyEvents = async () => {
-    try {
-      const res = await fetch(`${process.env.HERMIONE_SERVER_URL}/my-events/${userEmail}`);
-      const data = await res.json();
-      if (res.ok) {
-        setEvents(data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch user events:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const userEmail = user?.email;
+  console.log("user:",user,"events:",events,"loading:",loading);
 
   useEffect(() => {
+    // যদি userEmail না থাকে, তবে API কল করার দরকার নেই
+    if (!userEmail) return;
+
+    const fetchMyEvents = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`https://hermione-server.vercel.app/my-events/${userEmail}`);
+        const data = await res.json();
+        if (res.ok) {
+          setEvents(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user events:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchMyEvents();
-  }, []);
+  }, [userEmail]); // userEmail পাওয়া মাত্রই এটি আবার রান হবে
 
   // Delete Event Handler
   const handleDelete = async (id) => {
@@ -37,7 +44,6 @@ export default function ManageEventsPage() {
         });
         if (res.ok) {
           alert('Event deleted successfully!');
-          // State থেকে ফিল্টার করে ডিলিট হওয়া ইভেন্ট সরিয়ে দেওয়া
           setEvents(events.filter((event) => event._id !== id));
         } else {
           alert('Failed to delete event.');
@@ -48,7 +54,7 @@ export default function ManageEventsPage() {
     }
   };
 
-  if (loading) {
+  if (isPending || (loading && !userEmail)) {
     return (
       <div className="min-h-screen bg-gray-950 text-white flex justify-center items-center">
         <p className="text-xl animate-pulse">Loading your events...</p>
@@ -87,7 +93,7 @@ export default function ManageEventsPage() {
           <div className="text-center py-20 bg-gray-900/40 rounded-3xl border border-gray-800/80">
             <p className="text-gray-400 text-lg mb-4">You haven't created any events yet.</p>
             <Link
-              href="/event/create"
+              href="/events/create"
               className="inline-block bg-emerald-500 text-gray-950 font-semibold px-6 py-2.5 rounded-xl text-sm"
             >
               Create Your First Event
