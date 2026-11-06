@@ -62,7 +62,7 @@ export default function RegisterPage() {
             timer: 2000,
             showConfirmButton: false
           }).then(() => {
-            router.push('/events');
+            router.push('/');
           });
         },
         onError: (ctx) => {
