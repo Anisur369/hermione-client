@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { signUp } from '@/lib/auth-client';
 import Image from 'next/image';
 import logo from '../../../../public/logo.png';
-
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,7 +28,16 @@ export default function RegisterPage() {
     setErrorMsg('');
 
     if (!hasUppercase || !hasLowercase || !hasMinLength) {
-      setErrorMsg('Please fulfill all password requirements.');
+      const warningText = 'Please fulfill all password requirements.';
+      setErrorMsg(warningText);
+      Swal.fire({
+        icon: 'warning',
+        title: 'Weak Password',
+        text: warningText,
+        background: '#111827', // gray-900
+        color: '#f3f4f6',      // gray-100
+        confirmButtonColor: '#10b981', // emerald-500
+      });
       return;
     }
 
@@ -43,20 +52,56 @@ export default function RegisterPage() {
         callbackURL: '/',
       }, {
         onSuccess: () => {
-          alert('Account created successfully!');
-          router.push('/events');
+          Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            text: 'Your account has been created successfully.',
+            background: '#111827',
+            color: '#f3f4f6',
+            confirmButtonColor: '#10b981',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            router.push('/events');
+          });
         },
         onError: (ctx) => {
-          setErrorMsg(ctx.error.message || 'Registration failed.');
+          const msg = ctx.error.message || 'Registration failed.';
+          setErrorMsg(msg);
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: msg,
+            background: '#111827',
+            color: '#f3f4f6',
+            confirmButtonColor: '#10b981',
+          });
         }
       });
 
       if (error) {
         setErrorMsg(error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Registration Failed',
+          text: error.message,
+          background: '#111827',
+          color: '#f3f4f6',
+          confirmButtonColor: '#10b981',
+        });
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('An unexpected error occurred.');
+      const errMsg = 'An unexpected error occurred.';
+      setErrorMsg(errMsg);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errMsg,
+        background: '#111827',
+        color: '#f3f4f6',
+        confirmButtonColor: '#10b981',
+      });
     } finally {
       setLoading(false);
     }

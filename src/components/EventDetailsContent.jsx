@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from "@/lib/auth-client";
-
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function EventDetailsContent() {
   const params = useParams();
@@ -36,11 +36,8 @@ export default function EventDetailsContent() {
 
   console.log(id, userEmail);
 
-  // Handle Join Event functionality
+  // Handle Join Event functionality with SweetAlert2
   const handleJoinEvent = async () => {
-    // এখানে আপনার লগইন করা ইউজারের ইমেইল ডায়নামিকালি দিতে হবে (যেমন Auth Context বা LocalStorage থেকে)
-    // const userEmail = 'anisur@dev.com'; 
-
     setJoining(true);
     try {
       const res = await fetch(`https://hermione-server.vercel.app/join-event`, {
@@ -57,13 +54,36 @@ export default function EventDetailsContent() {
       const data = await res.json();
 
       if (res.ok) {
-        alert('Successfully joined this event!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Successfully Joined!',
+          text: 'You have successfully joined this event.',
+          background: '#111827', // gray-900
+          color: '#f3f4f6',      // gray-100
+          confirmButtonColor: '#10b981', // emerald-500
+          timer: 2500,
+          showConfirmButton: false
+        });
       } else {
-        alert(data.message || 'Failed to join event.');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Notice',
+          text: data.message || 'Failed to join event.',
+          background: '#111827',
+          color: '#f3f4f6',
+          confirmButtonColor: '#10b981',
+        });
       }
     } catch (err) {
       console.error('Error joining event:', err);
-      alert('Something went wrong!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+        background: '#111827',
+        color: '#f3f4f6',
+        confirmButtonColor: '#10b981',
+      });
     } finally {
       setJoining(false);
     }

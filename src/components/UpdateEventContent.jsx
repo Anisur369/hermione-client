@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function UpdateEventContent() {
   const params = useParams();
@@ -51,9 +52,16 @@ export default function UpdateEventContent() {
     e.preventDefault();
     const today = new Date().toISOString().split('T')[0];
     
-    // ভ্যালিডেশন: তারিখ ভবিষ্যতের হতে হবে[cite: 4]
+    // ভ্যালিডেশন: তারিখ ভবিষ্যতের হতে হবে
     if (formData.date <= today) {
-      alert('Event date must be in the future!');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Date',
+        text: 'Event date must be in the future!',
+        background: '#111827', // gray-900
+        color: '#f3f4f6',      // gray-100
+        confirmButtonColor: '#10b981', // emerald-500
+      });
       return;
     }
 
@@ -69,14 +77,38 @@ export default function UpdateEventContent() {
       });
 
       if (res.ok) {
-        alert('Event updated successfully!');
-        router.push('/events/manage'); // আপডেট শেষে ম্যানেজ পেজে রিডাইরেক্ট করবে
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: 'Event updated successfully!',
+          background: '#111827',
+          color: '#f3f4f6',
+          confirmButtonColor: '#10b981',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          router.push('/events/manage'); // আপডেট শেষে ম্যানেজ পেজে রিডাইরেক্ট করবে
+        });
       } else {
-        alert('Failed to update event.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed',
+          text: 'Failed to update event.',
+          background: '#111827',
+          color: '#f3f4f6',
+          confirmButtonColor: '#10b981',
+        });
       }
     } catch (err) {
       console.error('Error updating event:', err);
-      alert('Something went wrong!');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+        background: '#111827',
+        color: '#f3f4f6',
+        confirmButtonColor: '#10b981',
+      });
     } finally {
       setUpdating(false);
     }

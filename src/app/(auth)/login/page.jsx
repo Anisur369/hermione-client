@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { signIn } from "@/lib/auth-client";
 import Image from 'next/image';
 import logo from '../../../../public/logo.png';
-
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,20 +29,56 @@ export default function LoginPage() {
         callbackURL: '/',
       }, {
         onSuccess: () => {
-          alert('Successfully logged in!');
-          router.push('/');
+          Swal.fire({
+            icon: 'success',
+            title: 'Welcome Back!',
+            text: 'Successfully logged in!',
+            background: '#111827', // gray-900
+            color: '#f3f4f6',      // gray-100
+            confirmButtonColor: '#10b981', // emerald-500
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            router.push('/');
+          });
         },
         onError: (ctx) => {
-          setErrorMsg(ctx.error.message || 'Invalid email or password.');
+          const msg = ctx.error.message || 'Invalid email or password.';
+          setErrorMsg(msg);
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: msg,
+            background: '#111827',
+            color: '#f3f4f6',
+            confirmButtonColor: '#10b981',
+          });
         }
       });
 
       if (error) {
         setErrorMsg(error.message);
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: error.message,
+          background: '#111827',
+          color: '#f3f4f6',
+          confirmButtonColor: '#10b981',
+        });
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('An unexpected error occurred.');
+      const errMsg = 'An unexpected error occurred.';
+      setErrorMsg(errMsg);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: errMsg,
+        background: '#111827',
+        color: '#f3f4f6',
+        confirmButtonColor: '#10b981',
+      });
     } finally {
       setLoading(false);
     }
@@ -58,6 +94,14 @@ export default function LoginPage() {
     } catch (err) {
       console.error(err);
       setErrorMsg('Google login failed.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Login Failed',
+        text: 'Could not connect with Google. Please try again.',
+        background: '#111827',
+        color: '#f3f4f6',
+        confirmButtonColor: '#10b981',
+      });
     }
   };
 

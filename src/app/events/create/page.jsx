@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from "@/lib/auth-client";
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function CreateEvent() {
   const { data, isPending } = useSession();
@@ -24,7 +25,12 @@ export default function CreateEvent() {
     
     // Validation: Date must be in the future
     if (formData.date <= today) {
-      alert('Event date must be in the future!');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Date',
+        text: 'Event date must be in the future!',
+        confirmButtonColor: '#0d9488', // teal-600 color
+      });
       return;
     }
 
@@ -33,20 +39,42 @@ export default function CreateEvent() {
       createdBy: user?.email, // Replace with logged-in user's email
     };
 
-    const res = await fetch(`https://hermione-server.vercel.app/events`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(eventPayload),
-    });
+    try {
+      const res = await fetch(`https://hermione-server.vercel.app/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(eventPayload),
+      });
 
-    if (res.ok) {
-      alert('Event created successfully!');
-      router.push('/events');
-    } else {
-      alert('Failed to create event.');
+      if (res.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Event created successfully!',
+          confirmButtonColor: '#0d9488',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          router.push('/events');
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to create event.',
+          confirmButtonColor: '#0d9488',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Network Error',
+        text: 'Something went wrong. Please try again later.',
+        confirmButtonColor: '#0d9488',
+      });
     }
   };
 
@@ -157,7 +185,7 @@ export default function CreateEvent() {
           </div>
 
           {/* Organizer Email Info Box */}
-          <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between text-sm">
+          <div className="app-info bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between text-sm">
             <span className="text-gray-500 dark:text-gray-400">Organizer Email attached:</span>
             <span className="font-medium text-gray-800 dark:text-gray-200">{user?.email}</span>
           </div>

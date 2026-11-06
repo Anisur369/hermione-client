@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from "@/lib/auth-client";
+import Swal from 'sweetalert2'; // SweetAlert2 ইম্পোর্ট করা হলো
 
 export default function ManageEventsPage() {
   const { data, isPending } = useSession();
@@ -11,7 +12,7 @@ export default function ManageEventsPage() {
   const [loading, setLoading] = useState(true);
 
   const userEmail = user?.email;
-  console.log("user:",user,"events:",events,"loading:",loading);
+  console.log("user:", user, "events:", events, "loading:", loading);
 
   useEffect(() => {
     // যদি userEmail না থাকে, তবে API কল করার দরকার নেই
@@ -33,25 +34,62 @@ export default function ManageEventsPage() {
     };
 
     fetchMyEvents();
-  }, [userEmail]); // userEmail পাওয়া মাত্রই এটি আবার রান হবে
+  }, [userEmail]); // userEmail পাওয়া মাত্রই এটি আবার রান হবে
 
-  // Delete Event Handler
+  // Delete Event Handler with SweetAlert2 Confirmation
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this event?')) {
-      try {
-        const res = await fetch(`https://hermione-server.vercel.app/events/${id}`, {
-          method: 'DELETE',
-        });
-        if (res.ok) {
-          alert('Event deleted successfully!');
-          setEvents(events.filter((event) => event._id !== id));
-        } else {
-          alert('Failed to delete event.');
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      background: '#111827', // gray-900
+      color: '#f3f4f6',      // gray-100
+      confirmButtonColor: '#ef4444', // red-500
+      cancelButtonColor: '#374151',  // gray-700
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(`https://hermione-server.vercel.app/events/${id}`, {
+            method: 'DELETE',
+          });
+          
+          if (res.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Event has been deleted successfully.',
+              background: '#111827',
+              color: '#f3f4f6',
+              confirmButtonColor: '#10b981', // emerald-500
+              timer: 2000,
+              showConfirmButton: false
+            });
+            setEvents(events.filter((event) => event._id !== id));
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed',
+              text: 'Failed to delete event.',
+              background: '#111827',
+              color: '#f3f4f6',
+              confirmButtonColor: '#10b981',
+            });
+          }
+        } catch (err) {
+          console.error('Error deleting event:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong.',
+            background: '#111827',
+            color: '#f3f4f6',
+            confirmButtonColor: '#10b981',
+          });
         }
-      } catch (err) {
-        console.error('Error deleting event:', err);
       }
-    }
+    });
   };
 
   if (isPending || (loading && !userEmail)) {
