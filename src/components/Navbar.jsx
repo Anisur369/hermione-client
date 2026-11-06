@@ -118,7 +118,7 @@ export default function Navbar() {
                       onClick={handleSignOut} 
                       className="mt-2 pt-2 border-t dark:border-gray-700 text-left text-sm text-red-500 font-semibold hover:text-red-600 transition flex items-center gap-1"
                     >
-                      Logout
+                      Logouts
                     </button>
                   </div>
                 </div>
@@ -127,8 +127,8 @@ export default function Navbar() {
 
                 <button 
                   onClick={() => {
-                    setIsOpen(false);
                     handleSignOut();
+                    setIsOpen(false);
                   }} 
                   className="text-sm text-red-500 font-semibold px-3 py-2 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 transition rounded-md cursor-pointer"
                 >
